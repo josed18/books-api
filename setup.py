@@ -6,9 +6,5 @@ setup(
    description='A useful module',
    author='Jose Delgado',
    author_email='joseandresd18@gmail.com',
-   packages=['books-api'],
-   scripts=[
-            'scripts/cool',
-            'scripts/skype',
-           ]
+   packages=['books-api']
 )
