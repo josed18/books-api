@@ -7,5 +7,4 @@ setup(
    author='Jose Delgado',
    author_email='joseandresd18@gmail.com',
    packages=['booksapi'],
-   install_requires=['gunicorn==19.7.1'],
 )
