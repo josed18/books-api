@@ -3,7 +3,7 @@ __author__ = 'josed18'
 from flask import jsonify
 from werkzeug.contrib.fixers import ProxyFix
 
-from api import app
+from booksapi.api import app
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
