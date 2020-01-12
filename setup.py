@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-   name='books.api',
+   name='books-api',
    version='1.0',
    description='A useful module',
    author='Jose Delgado',
