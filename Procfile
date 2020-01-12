@@ -1,1 +1,1 @@
-web: gunicorn: booksapi.app:app
+web: gunicorn booksapi.app:app
