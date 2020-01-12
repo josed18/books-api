@@ -6,5 +6,6 @@ setup(
    description='A useful module',
    author='Jose Delgado',
    author_email='joseandresd18@gmail.com',
-   packages=['booksapi']
+   packages=['booksapi'],
+   install_requires=['gunicorn==19.7.1'],
 )
