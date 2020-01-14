@@ -12,6 +12,7 @@ class AccountAttributes:
 
 
 class Account(SQLAlchemyObjectType, AccountAttributes):
+    id = graphene.GlobalID(description="ID of the account")
 
     class Meta:
         model = AccountModel

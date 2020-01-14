@@ -18,9 +18,8 @@ class Book(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(200), nullable=False)
     sub_title = Column(String(200), nullable=True)
-    date = Column(TIMESTAMP, nullable=True)
-    publish_year = Column(TIMESTAMP, nullable=True)
-    editor = Column(String(200), nullable=True)
+    publish_date = Column(String(10), nullable=True)
+    publisher = Column(String(200), nullable=True)
     description = Column(Text)
     authors = relationship('BookAuthor', backref='book')
     categories = relationship('BookCategory', backref='book')
@@ -47,7 +46,7 @@ class BookCategory(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     book_id = Column(ForeignKey('book.id'), nullable=False)
-    author_id = Column(ForeignKey('category.id'), nullable=False)
+    category_id = Column(ForeignKey('category.id'), nullable=False)
 
 
 class Category(Base):
