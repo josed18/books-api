@@ -14,7 +14,7 @@ class Query(graphene.ObjectType):
     book_search = graphene.Field(book_schema.BookSearchPayload,
                                  search=graphene.String(description="term to search"),
                                  resolver=book_schema.resolver_book_search,
-                                 description="search a book info in the database or external provider")
+                                 description="(protected) search a book info in the database or external provider")
 
 
 class Mutation(graphene.ObjectType):
