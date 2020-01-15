@@ -196,3 +196,44 @@ class CreateBook(graphene.Mutation):
             book = book_services.create_book_by_openlibrary_info(book_info)
 
         return cls(CreateBookSuccess(book))
+
+
+class RemoveBookInput(graphene.InputObjectType):
+    book_id = graphene.GlobalID(description="Global Id of the book")
+
+
+class RemoveBookSuccess(graphene.ObjectType):
+    message = graphene.String(description="message with the confirmation")
+
+
+class RemoveBookError(graphene.ObjectType, ObjectError):
+    pass
+
+
+class RemoveBookPayload(graphene.Union):
+
+    class Meta:
+        types = (AuthInfoField, AccountNoExist, RemoveBookSuccess, RemoveBookError)
+
+
+class RemoveBook(graphene.Mutation):
+
+    response = graphene.Field(RemoveBookPayload)
+
+    class Arguments:
+        input = RemoveBookInput(required=True)
+
+    @classmethod
+    @mutation_header_jwt_required
+    @extract_account_from_token_in_mutation
+    def mutate(cls, self, info, account, input):
+        data = input_to_dictionary(input)
+
+        is_book_removed = book_services.remove_book(data.get('book_id'))
+        if not is_book_removed:
+            return cls(RemoveBookError(
+                code="BOOK_NOT_FOUND",
+                message="the book not exist in the app"
+            ))
+
+        return cls(RemoveBookSuccess(message="the book has been deleted successfully"))

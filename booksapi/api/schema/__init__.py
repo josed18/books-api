@@ -19,6 +19,7 @@ class Mutation(graphene.ObjectType):
     create_account = account_schema.CreateAccount.Field()
     login = auth_schema.Login.Field()
     create_book = book_schema.CreateBook.Field()
+    remove_book = book_schema.RemoveBook.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

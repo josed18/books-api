@@ -7,6 +7,10 @@ from booksapi.api.database.models import Author as AuthorModel
 from booksapi.api.database.models import Category as CategoryModel
 
 
+def find_book_by_id(book_id):
+    return BookModel.query.get(book_id)
+
+
 def search_book(search_term):
     search_term = f"%{search_term}%"
     return db_session.query(BookModel).outerjoin(BookCategoryModel).outerjoin(CategoryModel)\
@@ -19,6 +23,29 @@ def search_book(search_term):
             CategoryModel.name.like(search_term),
             AuthorModel.name.like(search_term),
         )).all()
+
+
+def remove_author_to_book(book):
+    BookAuthorModel.query.filter_by(book_id=book.id).delete()
+    db_session.flush()
+
+
+def remove_category_to_book(book):
+    BookCategoryModel.query.filter_by(book_id=book.id).delete()
+    db_session.flush()
+
+
+def remove_book(book_id):
+    book = find_book_by_id(book_id)
+    if book is None:
+        return False
+
+    remove_author_to_book(book)
+    remove_category_to_book(book)
+
+    db_session.delete(book)
+    db_session.commit()
+    return True
 
 
 def add_authors_to_book(book, authors_names):
