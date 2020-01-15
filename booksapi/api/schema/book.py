@@ -1,4 +1,5 @@
 import graphene
+import re
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from flask_graphql_auth import AuthInfoField, query_header_jwt_required, mutation_header_jwt_required
 from booksapi.api.database.models import Book as BookModel
@@ -6,6 +7,7 @@ from booksapi.api.database.models import Author as AuthorModel
 from booksapi.api.database.models import Category as CategoryModel
 from booksapi.api.utils.decorators import AccountNoExist, extract_account_from_token_in_query, extract_account_from_token_in_mutation
 from booksapi.api.services import googlebooks as googlebooks_services
+from booksapi.api.services import openlibrary as openlibrary_services
 from booksapi.api.services import book as book_services
 from booksapi.api.utils.helper import input_to_dictionary
 from .validator import Validate, InvalidValuesInput
@@ -112,7 +114,21 @@ def resolver_book_search(parent, info, account, search):
         categories=[ExternalCategory(name=category) for category in book.get('volumeInfo', {}).get("categories", [])]
     ) for book in google_books.get('items', [])]
 
-    return BookList(books=google_books)
+    open_library_books = openlibrary_services.search_books(search)
+
+    open_library_books = [ExternalBook(
+        external_id=book.get("edition_key", [None])[0],
+        provider="openlibrary",
+        title=book.get("title"),
+        sub_title=book.get("subtitle"),
+        publish_date=book.get("publish_date")[0],
+        publisher=book.get("publisher")[0],
+        description=book.get("first_sentence", [None])[0],
+        authors=[ExternalAuthor(name=author) for author in book.get("author_name", [])],
+        categories=[ExternalCategory(name=category) for category in book.get("subject", [])]
+    ) for book in open_library_books.get('docs', [])[:20]]
+
+    return BookList(books=(google_books + open_library_books))
 
 
 class CreateBookSuccess(graphene.ObjectType):
@@ -149,7 +165,7 @@ class CreateBook(graphene.Mutation):
 
         validations_schema = {
             'external_id': {'type': 'string', 'required': True, 'empty': False},
-            'provider': {'type': 'string', 'required': True, 'allowed': ['google']}
+            'provider': {'type': 'string', 'required': True, 'allowed': ['google', 'openlibrary']}
         }
 
         validate = Validate(data, validations_schema)
@@ -167,5 +183,16 @@ class CreateBook(graphene.Mutation):
                 ))
 
             book = book_services.create_book_by_google_info(book_info)
+
+        if data.get('provider') == "openlibrary":
+
+            book_info = openlibrary_services.get_book(data.get('external_id'))
+            if book_info is None:
+                return cls(CreateBookError(
+                    code="BOOK_NOT_FOUND",
+                    message="not found a book with the external id provided"
+                ))
+
+            book = book_services.create_book_by_openlibrary_info(book_info)
 
         return cls(CreateBookSuccess(book))

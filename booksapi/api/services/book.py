@@ -70,3 +70,22 @@ def create_book_by_google_info(book_info):
     db_session.commit()
 
     return book
+
+
+def create_book_by_openlibrary_info(book_info):
+    book = BookModel(
+        title=book_info.get("title"),
+        sub_title=book_info.get("subtitle"),
+        publish_date=book_info.get("publish_date"),
+        publisher=book_info.get("publishers", [None])[0],
+        description=book_info.get("description", {}).get("value")
+    )
+    db_session.add(book)
+    db_session.flush()
+
+    add_authors_to_book(book, book_info.get("author_name", []))
+    add_categories_to_book(book, book_info.get("subjects", []))
+
+    db_session.commit()
+
+    return book
