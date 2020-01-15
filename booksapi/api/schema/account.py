@@ -12,6 +12,7 @@ class AccountAttributes:
 
 
 class Account(SQLAlchemyObjectType, AccountAttributes):
+    """Account info"""
     id = graphene.GlobalID(description="ID of the account")
 
     class Meta:
@@ -39,6 +40,7 @@ class CreateAccountInput(graphene.InputObjectType, AccountAttributes):
 
 
 class CreateAccount(graphene.Mutation):
+    """Create a account to use the app"""
 
     Output = CreateAccountPayload
 

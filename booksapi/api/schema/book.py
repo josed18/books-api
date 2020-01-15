@@ -23,6 +23,7 @@ class BookAttributes:
 
 
 class Book(SQLAlchemyObjectType, BookAttributes):
+    """book info from database"""
     id = graphene.GlobalID(description="ID of the book")
     authors = graphene.List(lambda: Author, description="List of author of the book")
     categories = graphene.List(lambda: Category, description="List of categories of the book")
@@ -39,6 +40,7 @@ class Book(SQLAlchemyObjectType, BookAttributes):
 
 
 class Author(SQLAlchemyObjectType):
+    """Author info"""
     id = graphene.GlobalID(description="ID of the author")
     name = graphene.String(description="name of the author")
 
@@ -48,6 +50,7 @@ class Author(SQLAlchemyObjectType):
 
 
 class Category(SQLAlchemyObjectType):
+    """Category info"""
     id = graphene.GlobalID(description="ID of the category")
     name = graphene.String(description="name of the category")
 
@@ -57,6 +60,7 @@ class Category(SQLAlchemyObjectType):
 
 
 class ExternalBook(graphene.ObjectType, BookAttributes):
+    """book info from external provider"""
     external_id = graphene.String(description="ID of the book in the provider")
     authors = graphene.List(lambda: ExternalAuthor, description="List of author of the book")
     categories = graphene.List(lambda: ExternalCategory, description="List of categories of the book")
@@ -68,10 +72,12 @@ class ExternalBook(graphene.ObjectType, BookAttributes):
 
 
 class ExternalAuthor(graphene.ObjectType):
+    """Author info"""
     name = graphene.String(description="name of the author")
 
 
 class ExternalCategory(graphene.ObjectType):
+    """Category info"""
     name = graphene.String(description="name of the category")
 
 
@@ -151,7 +157,7 @@ class CreateBookInput(graphene.InputObjectType):
 
 
 class CreateBook(graphene.Mutation):
-
+    """(protected) Create a book in the app with a external provider info"""
     response = graphene.Field(CreateBookPayload)
 
     class Arguments:
@@ -217,7 +223,7 @@ class RemoveBookPayload(graphene.Union):
 
 
 class RemoveBook(graphene.Mutation):
-
+    """(protected) remove a book of the the app"""
     response = graphene.Field(RemoveBookPayload)
 
     class Arguments:

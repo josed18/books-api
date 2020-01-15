@@ -27,6 +27,7 @@ class LoginPayload(graphene.Union):
 
 
 class Login(graphene.Mutation):
+    """Login to use the app"""
     Output = LoginPayload
 
     class Arguments:

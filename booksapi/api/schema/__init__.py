@@ -11,8 +11,10 @@ class Query(graphene.ObjectType):
     account_list = SQLAlchemyConnectionField(account_schema.Account)
     book = graphene.relay.Node.Field(book_schema.Book)
     book_list = SQLAlchemyConnectionField(book_schema.Book)
-    book_search = graphene.Field(book_schema.BookSearchPayload, search=graphene.String(description="term to search"),
-                                 resolver=book_schema.resolver_book_search)
+    book_search = graphene.Field(book_schema.BookSearchPayload,
+                                 search=graphene.String(description="term to search"),
+                                 resolver=book_schema.resolver_book_search,
+                                 description="search a book info in the database or external provider")
 
 
 class Mutation(graphene.ObjectType):
