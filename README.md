@@ -1,7 +1,7 @@
-#BOOKS API
+# BOOKS API
 api para buscar y guardar informacion de libros desde `https://books.google.com/` y `https://openlibrary.org/`
 
-##servicion graphql
+## servicio graphql
 `-GET /graphql`
 
 ### autetification para mutaciones protegidas
